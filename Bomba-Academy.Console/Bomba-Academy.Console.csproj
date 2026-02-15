@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Bomba_Academy.Console</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bomba-Academy.Aplication\Bomba-Academy.Aplication.csproj" />
+    <ProjectReference Include="..\Bomba-Academy.DAL\Bomba-Academy.DAL.csproj" />
+  </ItemGroup>
+
+</Project>
