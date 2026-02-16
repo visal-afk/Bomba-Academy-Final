@@ -1,5 +1,5 @@
 ﻿using Bomba_Academy.DAL.Repository.Abstract.BaseRepos;
-using System.Text.RegularExpressions;
+using Bomba_Academy.Domain.Enteties;
 
 namespace Bomba_Academy.DAL.Repository.Abstract;
 

@@ -21,8 +21,4 @@
     <ProjectReference Include="..\Bomba-Academy.Domain\Bomba-Academy.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Repository\Concrete\" />
-  </ItemGroup>
-
 </Project>
