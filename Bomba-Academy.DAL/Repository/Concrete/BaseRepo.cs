@@ -1,6 +1,9 @@
 ﻿using Bomba_Academy.DAL.Context;
 using Bomba_Academy.DAL.Repository.Abstract.BaseRepos;
 using Bomba_Academy.Domain.BaseEntity;
+using Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bomba_Academy.DAL.Repository.Concrete;
 
@@ -32,13 +35,25 @@ public class BaseRepo<T> : IBaseRepo<T> where T : BaseEntitiy
 
     public IEnumerable<T> GetAll()
     {
-        return _context.Set<T>().Where(x => !x.IsDeleted).ToList();
+        var connectionString = _context.Database.GetConnectionString();
+        using(var connection = new SqlConnection(connectionString))
+        {
+            var sql = $"SELECT * FROM {typeof(T).Name}s WHERE IsDeleted = 0";
+            var result = connection.Query<T>(sql);
+            return result;
+        }
 
     }
 
     public T GetById(int id)
     {
-        return _context.Set<T>().FirstOrDefault(x => x.Id == id && !x.IsDeleted);
+        var connectionString = _context.Database.GetConnectionString();
+        using(var connection = new SqlConnection(connectionString))
+        {
+            var sql = $"SELECT * FROM {typeof(T).Name}s WHERE Id = @Id AND IsDeleted = 0";
+            var result = connection.QueryFirstOrDefault<T>(sql, new { Id = id });
+            return result;
+        }
     }
 
     public void Update(int id)

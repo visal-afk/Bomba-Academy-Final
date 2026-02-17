@@ -13,6 +13,6 @@ public class TeacherRepo : BaseRepo<Teacher>, ITeacherRepo
 
     public IEnumerable<Teacher> GetAllWithSubjects()
     {
-        return _context.Teachers.Include(t => t.TeacherSubjects).ThenInclude(ts => ts.Subject).ToList();
+        throw new NotImplementedException();
     }
 }

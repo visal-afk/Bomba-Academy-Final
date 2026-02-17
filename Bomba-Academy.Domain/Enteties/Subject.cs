@@ -7,6 +7,6 @@ public class Subject: BaseEntitiy
     public string Name { get; set; }
     public int CourseId { get; set; }
     public Course Course { get; set; }
-    public ICollection<TeacherSubject> TeacherSubjects { get; set; }
+    public  ICollection<Teacher> Teachers { get; set; }
 
 }
