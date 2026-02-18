@@ -1,6 +1,9 @@
 ﻿using Bomba_Academy.DAL.Context;
 using Bomba_Academy.DAL.Repository.Abstract;
+using Bomba_Academy.Domain.DTOs;
 using Bomba_Academy.Domain.Enteties;
+using Dapper;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bomba_Academy.DAL.Repository.Concrete;
@@ -11,8 +14,14 @@ public class SubjectRepo : BaseRepo<Subject>, ISubjectRepo
     { 
     }
 
-    public IEnumerable<Subject> GetAllWithCourses()
+    public IEnumerable<SubjectInfoDto> GetAllWithCourses()
     {
-        return _context.Subjects.Include(s => s.Course).ToList();
+        var conection = _context.Database.GetConnectionString();
+        using(var connection = new SqlConnection(conection))
+        {
+            var sql = @"SELECT * FROM GetAllWithCoursesView";
+            var result = connection.Query<SubjectInfoDto>(sql).ToList();
+            return result;
+        }
     }
 }

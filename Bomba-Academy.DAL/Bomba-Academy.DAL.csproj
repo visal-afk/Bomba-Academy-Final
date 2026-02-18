@@ -18,7 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bomba-Academy.Aplication\Bomba-Academy.Aplication.csproj" />
     <ProjectReference Include="..\Bomba-Academy.Domain\Bomba-Academy.Domain.csproj" />
   </ItemGroup>
 

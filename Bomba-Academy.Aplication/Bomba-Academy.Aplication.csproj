@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Bomba-Academy.DAL\Bomba-Academy.DAL.csproj" />
     <ProjectReference Include="..\Bomba-Academy.Domain\Bomba-Academy.Domain.csproj" />
   </ItemGroup>
 

@@ -16,28 +16,13 @@ public class AuditoriumRepo : BaseRepo<Auditorium>, IAuditoriumRepo
 
     public IEnumerable<AuditorimInfoDto> GetAllWithCoursesAndGroup()
     {
-        //var auditoriums = _context.Auditoriums
-        //    .Include(a => a.Groups)
-        //    .ThenInclude(g => g.Course)
-        //    .Select(a => new AuditorimInfoDto
-        //    {
-        //        Id = a.Id,
-        //        Name = a.Name,
-        //        GroupName = a.Groups.FirstOrDefault().Name,
-        //        Course = a.Groups.FirstOrDefault().Course != null ? a.Groups.FirstOrDefault().Course.Id : (int?)null
-        //    })
-        //    .ToList();
-        //return auditoriums;
-        //Dapper
+       
         var conectionString = _context.Database.GetConnectionString();
         using (var connection = new SqlConnection(conectionString))
         {
-            var sql = @"SELECT a.Id, a.Name, g.Name AS GroupName, c.Id AS Course
-                        FROM Auditoriums a
-                        LEFT JOIN Groups g ON a.Id = g.AuditoriumId
-                        LEFT JOIN Courses c ON g.CourseId = c.Id";
-            var auditoriums = connection.Query<AuditorimInfoDto>(sql).ToList();
-            return auditoriums;
+            var sql = "SELECT * FROM GetAllWithCoursesAndGroupView";
+            var result = connection.Query<AuditorimInfoDto>(sql).ToList();
+            return result;
 
 
         }

@@ -1,6 +1,9 @@
 ﻿using Bomba_Academy.DAL.Context;
 using Bomba_Academy.DAL.Repository.Abstract;
+using Bomba_Academy.Domain.DTOs;
 using Bomba_Academy.Domain.Enteties;
+using Dapper;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -12,11 +15,16 @@ public class GroupRepo : BaseRepo<Group>, IGroupRepo
     {
     }
 
-    public IEnumerable<Group> GetAllWithCoursesAndAuditoriums()
+    public IEnumerable<GroupInfoDto> GetAllWithCoursesAndAuditoriums()
     {
-        return _context.Groups
-            .Include(g => g.Course)
-            .Include(g => g.Auditorium)
-            .ToList();
+
+        var conection = _context.Database.GetConnectionString();
+        using (var connection = new SqlConnection(conection))
+        {
+            var query = "SELECT * FROM GetAllWithCoursesAndAuditoriumsView";
+            var result = connection.Query<GroupInfoDto>(query).ToList();
+            return result;
+        }
+
     }
 }
