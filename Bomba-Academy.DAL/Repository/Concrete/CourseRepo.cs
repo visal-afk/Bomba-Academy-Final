@@ -1,6 +1,7 @@
 ﻿
 using Bomba_Academy.DAL.Context;
 using Bomba_Academy.DAL.Repository.Abstract;
+using Bomba_Academy.Domain.DTOs;
 using Bomba_Academy.Domain.Enteties;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,10 +13,8 @@ public class CourseRepo : BaseRepo<Course>, ICourseRepo
     {
     }
 
-    public IEnumerable<Course> GetAllWithGroups()
+    IEnumerable<CourseInfoDto> ICourseRepo.GetAllWithGroups()
     {
-        return _context.Courses
-            .Include(c => c.Groups)
-            .ToList();
+
     }
 }
