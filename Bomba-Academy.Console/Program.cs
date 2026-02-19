@@ -6,44 +6,24 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
-// Determine if we are running in TEST mode (InMemory) or DEFAULT mode (SQL Server)
-// Usage: dotnet run -- test
-bool isTestMode = args.Length > 0 && args[0] == "test";
+Console.WriteLine("--- RUNNING IN SQL SERVER MODE ---");
 
-BombaAcademyDbContext context;
-
-if (isTestMode)
-{
-    Console.WriteLine("--- RUNNING IN TEST MODE (InMemory Database) ---");
-    var options = new DbContextOptionsBuilder<BombaAcademyDbContext>()
-        .UseInMemoryDatabase("BombaAcademyTestDb")
-        .Options;
-    context = new BombaAcademyDbContext(options);
-}
-else
-{
-    Console.WriteLine("--- RUNNING IN DEFAULT MODE (SQL Server) ---");
-    // This uses the OnConfiguring method in DbContext which has the connection string
-    context = new BombaAcademyDbContext();
-}
+var context = new BombaAcademyDbContext();
 
 try
 {
     // Initialize UnitOfWork and Services
     using (context)
     {
-        if (isTestMode)
+        // Ensure the database is created
+        Console.WriteLine("Checking database connection...");
+        if (context.Database.EnsureCreated())
         {
-            // Optional: Seed data for testing if needed
-            // context.Database.EnsureCreated();
+            Console.WriteLine("Database created successfully.");
         }
         else
         {
-            // Check if we can connect (optional, might throw if DB doesn't exist)
-            if (!context.Database.CanConnect())
-            {
-                Console.WriteLine("Warning: Could not connect to the database. Ensure the connection string is correct and SQL Server is running.");
-            }
+            Console.WriteLine("Database already exists.");
         }
 
         var uow = new UnitOfWork(context);
@@ -185,9 +165,6 @@ static void ManageStudents(StudentService studentService, GroupService groupServ
 
                             // We call Update(id) on service, which calls Update(id) on repo.
                             // Since we modified the entity directly (which is tracked), SaveChanges in Update(id) *should* persist it.
-                            // But wait, StudentService.Update(id) calls _unitOfWork.StudentRepo.Update(id) then SaveChanges().
-                            // Repo.Update(id) just updates UpdatedDate.
-                            // Since entity is tracked, SaveChanges() will save our property changes + UpdatedDate.
                             studentService.Update(updateId);
                             Console.WriteLine("Student updated successfully.");
                         }
@@ -354,13 +331,6 @@ static void ManageGroups(GroupService groupService, DepartamentService deptServi
                     foreach(var d in deptService.GetAll()) Console.WriteLine($"ID: {d.Id}, Name: {d.Name}");
                     Console.Write("Enter Department ID: ");
                     if (!int.TryParse(Console.ReadLine(), out int deptId)) deptId = 0;
-
-                    // Note: Group also requires AuditoriumId and CourseId usually, checking entity definition...
-                    // In previous checks, Group.cs had Auditorium and Course properties.
-                    // Let's assume we need IDs for them.
-                    // Since I don't have services for them initialized in main loop (I only added dept),
-                    // I will just ask for IDs blindly or default them to 0 (which might fail FK constraint in SQL Server).
-                    // For simplicity, I'll ask for IDs.
 
                     Console.Write("Enter Auditorium ID: ");
                     if (!int.TryParse(Console.ReadLine(), out int audId)) audId = 0;
