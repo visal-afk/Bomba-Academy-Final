@@ -1,7 +1,8 @@
-﻿using Bomba_Academy.Aplication.Abstract;
+using Bomba_Academy.Aplication.Abstract;
 using Bomba_Academy.DAL.UOW.Abstract;
 using Bomba_Academy.Domain.DTOs;
 using Bomba_Academy.Domain.Enteties;
+using Bomba_Academy.Domain.Exceptions;
 
 namespace Bomba_Academy.Aplication.Concrete;
 
@@ -14,6 +15,15 @@ public class SubjectService : IBaseService<Subject>
     }
     public void Create(Subject entity)
     {
+        var existing = _unitOfWork.SubjectRepo
+            .GetAll()
+            .FirstOrDefault(s => s.Name == entity.Name && s.CourseId == entity.CourseId);
+
+        if (existing != null)
+        {
+            throw new SubjectAlreadyExistsException(entity.Name);
+        }
+
         _unitOfWork.SubjectRepo.Create(entity);
         _unitOfWork.SaveChanges();
     }

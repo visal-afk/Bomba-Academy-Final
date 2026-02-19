@@ -1,7 +1,8 @@
-﻿using Bomba_Academy.Aplication.Abstract;
+using Bomba_Academy.Aplication.Abstract;
 using Bomba_Academy.DAL.UOW.Abstract;
 using Bomba_Academy.Domain.DTOs;
 using Bomba_Academy.Domain.Enteties;
+using Bomba_Academy.Domain.Exceptions;
 
 namespace Bomba_Academy.Aplication.Concrete;
 
@@ -14,8 +15,17 @@ public class GroupService : IBaseService<Group>
     }
     public void Create(Group entity)
     {
+        var existing = _unitOfWork.GroupRepo
+            .GetAll()
+            .FirstOrDefault(g => g.Name == entity.Name);
+
+        if (existing != null)
+        {
+            throw new GroupAlreadyExistsException(entity.Name);
+        }
+
         _unitOfWork.GroupRepo.Create(entity);
-            _unitOfWork.SaveChanges();
+        _unitOfWork.SaveChanges();
     }
 
     public void Delete(int id)

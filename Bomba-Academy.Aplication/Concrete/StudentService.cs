@@ -1,7 +1,8 @@
-﻿using Bomba_Academy.Aplication.Abstract;
+using Bomba_Academy.Aplication.Abstract;
 using Bomba_Academy.DAL.UOW.Abstract;
 using Bomba_Academy.Domain.DTOs;
 using Bomba_Academy.Domain.Enteties;
+using Bomba_Academy.Domain.Exceptions;
 
 namespace Bomba_Academy.Aplication.Concrete;
 
@@ -14,8 +15,17 @@ public class StudentService : IBaseService<Student>
     }
     public void Create(Student entity)
     {
+        var existing = _unitOfWork.StudentRepo
+            .GetAll()
+            .FirstOrDefault(s => s.Pin == entity.Pin);
+
+        if (existing != null)
+        {
+            throw new StudentAlreadyExistsException(entity.Pin);
+        }
+
         _unitOfWork.StudentRepo.Create(entity);
-            _unitOfWork.SaveChanges();
+        _unitOfWork.SaveChanges();
     }
 
     public void Delete(int id)

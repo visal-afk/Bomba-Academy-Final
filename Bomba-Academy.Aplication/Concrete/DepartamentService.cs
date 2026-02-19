@@ -1,7 +1,8 @@
-﻿using Bomba_Academy.Aplication.Abstract;
+using Bomba_Academy.Aplication.Abstract;
 using Bomba_Academy.DAL.UOW.Abstract;
 using Bomba_Academy.Domain.DTOs;
 using Bomba_Academy.Domain.Enteties;
+using Bomba_Academy.Domain.Exceptions;
 
 namespace Bomba_Academy.Aplication.Concrete;
 
@@ -14,6 +15,15 @@ public class DepartamentService : IBaseService<Departament>
     }
     public void Create(Departament entity)
     {
+        var existing = _unitOfWork.DepartamentRepo
+            .GetAll()
+            .FirstOrDefault(d => d.Name == entity.Name);
+
+        if (existing != null)
+        {
+            throw new DepartamentAlreadyExistsException(entity.Name);
+        }
+
         _unitOfWork.DepartamentRepo.Create(entity);
     }
 

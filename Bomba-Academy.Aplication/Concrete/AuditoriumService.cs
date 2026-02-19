@@ -1,7 +1,8 @@
-﻿using Bomba_Academy.Aplication.Abstract;
+using Bomba_Academy.Aplication.Abstract;
 using Bomba_Academy.DAL.UOW.Abstract;
 using Bomba_Academy.Domain.DTOs;
 using Bomba_Academy.Domain.Enteties;
+using Bomba_Academy.Domain.Exceptions;
 namespace Bomba_Academy.Aplication.Concrete;
 
 public class AuditoriumService : IBaseService<Auditorium>
@@ -13,8 +14,17 @@ public class AuditoriumService : IBaseService<Auditorium>
     }
     public void Create(Auditorium entity)
     {
+        var existing = _unitOfWork.AuditoriumRepo
+            .GetAll()
+            .FirstOrDefault(a => a.Name == entity.Name);
+
+        if (existing != null)
+        {
+            throw new AuditoriumAlreadyExistsException(entity.Name);
+        }
+
         _unitOfWork.AuditoriumRepo.Create(entity);
-            _unitOfWork.SaveChanges();
+        _unitOfWork.SaveChanges();
     }
 
     public void Delete(int id)
