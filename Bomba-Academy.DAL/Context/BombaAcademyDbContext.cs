@@ -4,9 +4,20 @@ using Bomba_Academy.Domain.Enteties;
 using Microsoft.EntityFrameworkCore;
 public class BombaAcademyDbContext: DbContext
 {
+    public BombaAcademyDbContext()
+    {
+    }
+
+    public BombaAcademyDbContext(DbContextOptions<BombaAcademyDbContext> options) : base(options)
+    {
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("Data Source=DESKTOP-LJTCG3Q\\SQLEXPRESS;Initial Catalog=Bomba_Academy;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;");
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer("Data Source=DESKTOP-LJTCG3Q\\SQLEXPRESS;Initial Catalog=Bomba_Academy;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;");
+        }
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
